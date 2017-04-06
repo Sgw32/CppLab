@@ -150,7 +150,6 @@ char* processOperator_c(char* op,float a,float b)
 
 float processOperator(char* op, float a, float b)
 {
-	float ans;
 	if (*op == '+')
 		return (float)(a + b);
 	if (*op == '-')
@@ -161,7 +160,7 @@ float processOperator(char* op, float a, float b)
 		return (float)(b / a);
 	if (*op == '^')
 		return (float)(pow(b, a));
-	return ans;
+	return 0;
 }
 
 float processOperator(char* op, float a)
@@ -243,7 +242,6 @@ float calculate(Queue<char*> &q)
 	while (q.end != NULL)
 	{
 		char* res;
-		char* temp;
 		Node<char*>* opstr[3] = { NULL, NULL, NULL };
 		opstr[0] = q.start; //34
 		while ((!isOperator(opstr[0]->value) && !isFunction(opstr[0]->value)))//&&(opstr[0]!=q.end))
@@ -253,7 +251,7 @@ float calculate(Queue<char*> &q)
 			opstr[0] = opstr[0]->next;
 			if (!opstr[2] && opstr[1] && !opstr[0])
 			{
-				return atof(opstr[1]->value);  //Выход из функции здесь.
+				return (float)atof(opstr[1]->value);  //Выход из функции здесь.
 			}
 		}
 		if (isOperator(opstr[0]->value))
@@ -261,7 +259,7 @@ float calculate(Queue<char*> &q)
 			switch (getOperatorType(opstr[0]->value))
 			{
 			case BINARY:
-				res = processOperator_c(opstr[0]->value, atof(opstr[1]->value), atof(opstr[2]->value));
+				res = processOperator_c(opstr[0]->value, atof(opstr[1]->value), (float)atof(opstr[2]->value));
 				opstr[2]->value = res;
 				opstr[2]->next = opstr[0]->next;
 				opstr[1]->next = NULL;
