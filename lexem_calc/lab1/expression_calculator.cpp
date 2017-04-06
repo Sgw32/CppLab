@@ -166,16 +166,27 @@ float processOperator(char* op, float a, float b)
 
 float processOperator(char* op, float a)
 {
+	if (*op == '!')
+		return (float)(fac((int)floor(a)));
 	return 0;
 }
 
+int fac(int x)
+{
+	static const int table[] = {
+		1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600,
+	};
+	if (x > 12)
+		return 0;
+	return table[x];
+}
 
 int getOperatorType(char* op)
 {
 	if ((*op=='+')||(*op=='-')||(*op=='*')||(*op=='\\')||(*op=='/'))
 		return BINARY;
-	//if (op=="+")
-	//	return BINARY;
+	if (*op == '!')
+		return UNARY;
 	return UNKNOWN;
 }
 
@@ -184,7 +195,7 @@ float calculate2(Queue<char*> &q)
 {
 	char* str=0;
 	Node<char*>* opstr[3]={NULL,NULL,NULL};
-	Queue<float> temp_f_q;
+	Stack<float> temp_f_q =  initStack<float>();
 	float res, a, b;
 
 	while(!isEmpty(q))
@@ -197,18 +208,19 @@ float calculate2(Queue<char*> &q)
 		}
 		if (isOperator(str))
 		{
-			pop_s(temp_f_q, a);
-			pop_s(temp_f_q, b);
+			
 			switch (getOperatorType(str))
 			{
 			case BINARY:
-				res = processOperator(str,a,b);
+				pop_s(temp_f_q, a);
+				pop_s(temp_f_q, b);
+				res = processOperator(str,b,a);
 				push(temp_f_q, res);
 				break;
 			case UNARY:
+				pop_s(temp_f_q, a);
 				res = processOperator(str, a);
 				push(temp_f_q, res);
-				//  акие есть примеры унарных операторов?
 				break;
 			default:
 				break;

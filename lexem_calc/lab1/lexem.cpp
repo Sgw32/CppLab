@@ -21,6 +21,8 @@ bool isFunction(char* lexem)
 
 int getOperatorPriority(char* lexem)
 {
+	if (*lexem == '!')
+		return 6;
 	if (*lexem=='^')
 		return 5;
 	if (*lexem=='*')
@@ -77,6 +79,6 @@ bool isOperand(char* lexem)
 
 bool isOperator(char* lexem)
 {
-	bool res = ((*lexem=='-')||(*lexem=='+')||(*lexem=='*')||(*lexem=='^')||(*lexem=='\\')||(*lexem=='/'))&&(getSingleSize(lexem));
+	bool res = ((*lexem == '!') || (*lexem == '-') || (*lexem == '+') || (*lexem == '*') || (*lexem == '^') || (*lexem == '\\') || (*lexem == '/')) && (getSingleSize(lexem));
 	return res;
 }

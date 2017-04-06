@@ -20,4 +20,7 @@ char* processOperator_c(char* op,float a,float b);
 float processOperator(char* op, float a);
 float processOperator(char* op, float a, float b);
 int getOperatorType(char* op);
+
+//int32_t
+int fac(int x);
 #endif
