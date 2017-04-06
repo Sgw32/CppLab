@@ -11,6 +11,7 @@ enum
 };
 
 Queue<char*> parseExpression(char* exps);
+Queue<char*> makeInvPN(Queue<char*> q);
 void processLexem(char* str,Queue<char*>& res,Stack<char*>& slaveS);
 //Queue<char*> parseExpression2(char* exps);
 float calculate(Queue<char*> &q);

@@ -18,14 +18,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	Queue<char*> inq = initQueue<char*>();
 	inq = parseExpression(expr);
-
+	Queue<char*> inp = makeInvPN(inq);
 	/*while(!isEmpty(inq))
 	{
 		char* val = 0;
 		pop_s(inq,val);
 		printf("OBR %s \n",val);
 	}*/
-	float res = calculate(inq);
+	float res = calculate(inp);
 	printf("OBR %f \n",res);
 	getch();
 	return 0;

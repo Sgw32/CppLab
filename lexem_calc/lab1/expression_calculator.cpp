@@ -63,7 +63,7 @@ Queue<char*> parseExpression(char* exps)
 	int i,curi;
 	i=curi=0;
 	Queue<char*> res = initQueue<char*>();
-	Stack<char*> slaveS = initStack<char*>();
+	//Stack<char*> slaveS = initStack<char*>();
 
 
 	while (curi!=strlen(exps))
@@ -81,10 +81,10 @@ Queue<char*> parseExpression(char* exps)
 			if (isOperand(subs)||isOperator(subs)||isFunction(subs)
 				||isOpeningBracket(subs)||isClosingBracket(subs)||isVariable(subs))
 			{
-				//push(res,subs);
-				//printf("printf %s \n",subs);
+				push(res,subs);
+				printf("printf %s \n",subs);
 				//Формирование обратной польской записи
-				processLexem(subs,res,slaveS);
+				//processLexem(subs,res,slaveS);
 				curi=i;
 				break;
 			}
@@ -97,15 +97,37 @@ Queue<char*> parseExpression(char* exps)
 			}
 		}
 	}
+	/*while (!isEmpty(slaveS))
+	{
+		char* str = 0;
+		Node<char*>* st = slaveS.top;
+		push(res, st->value);
+		printf("OP %s \n", st->value);
+		pop_s(slaveS, str);
+	}*/
+	return res;
+}
+
+Queue<char*> makeInvPN(Queue<char*> q)
+{
+	Queue<char*> res = initQueue<char*>();
+	Stack<char*> slaveS = initStack<char*>();
+
+	while (!isEmpty(q))
+	{
+		char* str = new char[50];
+		pop_s(q, str);
+		processLexem(str, res, slaveS);
+	}
 
 	//Формирование обратной польской записи. Перенос стека.
-	while(!isEmpty(slaveS))
+	while (!isEmpty(slaveS))
 	{
-		char* str=0;
+		char* str = 0;
 		Node<char*>* st = slaveS.top;
-		push(res,st->value);
-		printf("OP %s \n",st->value);
-		pop_s(slaveS,str);
+		push(res, st->value);
+		printf("OP %s \n", st->value);
+		pop_s(slaveS, str);
 	}
 	return res;
 }
