@@ -132,7 +132,7 @@ Queue<char*> makeInvPN(Queue<char*> q)
 	return res;
 }
 
-char* processOperator(char* op,float a,float b)
+char* processOperator_c(char* op,float a,float b)
 {
 	char* ans = new char[20];
 	if (*op=='+')
@@ -148,6 +148,28 @@ char* processOperator(char* op,float a,float b)
     return ans;
 }
 
+float processOperator(char* op, float a, float b)
+{
+	float ans;
+	if (*op == '+')
+		return (float)(a + b);
+	if (*op == '-')
+		return (float)(a - b);
+	if (*op == '*')
+		return (float)(a*b);
+	if ((*op == '/') || (*op == '\\'))
+		return (float)(b / a);
+	if (*op == '^')
+		return (float)(pow(b, a));
+	return ans;
+}
+
+float processOperator(char* op, float a)
+{
+	return 0;
+}
+
+
 int getOperatorType(char* op)
 {
 	if ((*op=='+')||(*op=='-')||(*op=='*')||(*op=='\\')||(*op=='/'))
@@ -158,22 +180,66 @@ int getOperatorType(char* op)
 }
 
 //Вычислить значение выражения по обратной польской записи. 
-float calculate(Queue<char*> &q)
+float calculate2(Queue<char*> &q)
 {
 	char* str=0;
 	Node<char*>* opstr[3]={NULL,NULL,NULL};
-	while(q.end!=NULL)
+	Queue<float> temp_f_q;
+	float res, a, b;
+
+	while(!isEmpty(q))
+	{
+		char* str = new char[50];
+		pop_s(q, str);
+		if (isOperand(str))
+		{
+			push(temp_f_q, (float)atof(str));
+		}
+		if (isOperator(str))
+		{
+			pop_s(temp_f_q, a);
+			pop_s(temp_f_q, b);
+			switch (getOperatorType(str))
+			{
+			case BINARY:
+				res = processOperator(str,a,b);
+				push(temp_f_q, res);
+				break;
+			case UNARY:
+				res = processOperator(str, a);
+				push(temp_f_q, res);
+				// Какие есть примеры унарных операторов?
+				break;
+			default:
+				break;
+			}
+		}
+		if (isFunction(str))
+		{
+
+		}
+	}
+	pop_s(temp_f_q, a);
+    return a;
+}
+
+float calculate(Queue<char*> &q)
+{
+	char* str = 0;
+	Node<char*>* opstr[3] = { NULL, NULL, NULL };
+
+	while (q.end != NULL)
 	{
 		char* res;
 		char* temp;
-		Node<char*>* opstr[3]={NULL,NULL,NULL};
-		opstr[0]=q.start; //34
-		while((!isOperator(opstr[0]->value)&&!isFunction(opstr[0]->value)))//&&(opstr[0]!=q.end))
+		Node<char*>* opstr[3] = { NULL, NULL, NULL };
+		opstr[0] = q.start; //34
+		while ((!isOperator(opstr[0]->value) && !isFunction(opstr[0]->value)))//&&(opstr[0]!=q.end))
 		{
-			opstr[2]=opstr[1];
-			opstr[1]=opstr[0];
-			opstr[0]=opstr[0]->next;
-			if (!opstr[2]&&opstr[1]&&!opstr[0])
+			opstr[2] = opstr[1];
+			opstr[1] = opstr[0];
+			opstr[0] = opstr[0]->next;
+			if (!opstr[2] && opstr[1] && !opstr[0])
 			{
 				return atof(opstr[1]->value);  //Выход из функции здесь.
 			}
@@ -183,11 +249,11 @@ float calculate(Queue<char*> &q)
 			switch (getOperatorType(opstr[0]->value))
 			{
 			case BINARY:
-				res = processOperator(opstr[0]->value,atof(opstr[1]->value),atof(opstr[2]->value));
+				res = processOperator_c(opstr[0]->value, atof(opstr[1]->value), atof(opstr[2]->value));
 				opstr[2]->value = res;
-				opstr[2]->next=opstr[0]->next;
-				opstr[1]->next=NULL;
-				opstr[0]->next=NULL;
+				opstr[2]->next = opstr[0]->next;
+				opstr[1]->next = NULL;
+				opstr[0]->next = NULL;
 				delete opstr[1];
 				delete opstr[0];
 				break;
@@ -203,5 +269,5 @@ float calculate(Queue<char*> &q)
 			//Пока что нет обработки функций.
 		}
 	}
-    return 0;
+	return 0;
 }
