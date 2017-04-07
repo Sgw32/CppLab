@@ -3,7 +3,7 @@
 void processLexem(char* subs,Queue<char*>& res,Stack<char*>& slaveS)
 {
 	//По пунктам с алгоритма на почте. 
-	if (isOperand(subs))
+	if ((isOperand(subs))||(isVariable(subs)))
 	{
 		push(res,subs);
 		printf("OP %s \n",subs);
@@ -163,6 +163,27 @@ float processOperator(char* op, float a, float b)
 	return 0;
 }
 
+float processFunction(char* lexem, float a)
+{
+	if (strcmp(lexem,"sin")==0)
+		return (float)(sin(a));
+	if (strcmp(lexem,"tg")==0)
+		return (float)(tan(a));
+	if (strcmp(lexem,"ctg")==0)
+		return (float)(1/tan(a));
+	if (strcmp(lexem,"atan")==0)
+		return (float)(atan(a));
+	if (strcmp(lexem,"sqrt")==0)
+		return (float)(sqrt(a));
+	if (strcmp(lexem,"ln")==0)
+		return (float)(log(a));
+	if (strcmp(lexem,"log")==0)
+		return (float)(log10(a));
+	if (strcmp(lexem,"cos")==0)
+		return (float)(cos(a));
+	return 0;
+}
+
 float processOperator(char* op, float a)
 {
 	if (*op == '!')
@@ -187,6 +208,54 @@ int getOperatorType(char* op)
 	if (*op == '!')
 		return UNARY;
 	return UNKNOWN;
+}
+
+float getVariableValue(char str,Queue<varPair*> vars)
+{
+	Node<varPair*> *var = vars.start;
+	while (!isEmpty(vars)) 
+	{
+		if (var->value->var==str)
+			return var->value->value;
+		var=var->next;
+	}
+	return 0;
+}
+
+bool calculate_var(Queue<char*> &q, float &res, Queue<varPair*> &vps)
+{
+	Queue<char*> vars = getVariables(q);
+	Node<char*> *var = vars.start;
+
+	while (var!=NULL) 
+	{
+		Node<char*> *el = q.start;
+		bool found=false;
+		//Найдём Node переменной node
+		while ((el!=NULL)&&(!found))
+		{
+			if (el->value==var->value) // Нашли
+			{
+				char* varname;
+				var=var->next;
+				pop_s(vars,varname);
+				float varValue = getVariableValue(*varname,vps); //Выделим значение переменной из vps.
+				sprintf(el->value,"%f",varValue);//Заменим в q на то что в vps
+				found=true;
+				continue;
+			}
+			el=el->next;
+		}
+		//Не нашли. 
+		if (!found)
+			return false;
+	}
+	if (isEmpty(vars))
+	{
+		res = calculate2(q);
+		return true;
+	}
+	return false;
 }
 
 //Вычислить значение выражения по обратной польской записи. 
@@ -227,11 +296,28 @@ float calculate2(Queue<char*> &q)
 		}
 		if (isFunction(str))
 		{
-
+			pop_s(temp_f_q, a);
+			res = processFunction(str,a);
+			push(temp_f_q, res);
 		}
 	}
 	pop_s(temp_f_q, a);
     return a;
+}
+
+Queue<char*> getVariables(Queue<char*> q)
+{
+	Queue<char*> temp_v_q =  initQueue<char*>();
+	Node<char*> *el = q.start;
+	while (el->next)
+	{
+		if (isVariable(el->value))
+		{
+			push(temp_v_q,el->value);
+		}
+		el=el->next;
+	}
+	return temp_v_q;
 }
 
 float calculate(Queue<char*> &q)

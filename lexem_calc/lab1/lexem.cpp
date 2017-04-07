@@ -11,7 +11,7 @@ bool isFunction(char* lexem)
 		(strcmp(lexem,"tg")==0)||
 		(strcmp(lexem,"ctg")==0)||
 		(strcmp(lexem,"atan")==0)||
-		(strcmp(lexem,"atan2")==0)||
+		/*(strcmp(lexem,"atan2")==0)||*/
 		(strcmp(lexem,"sqrt")==0)||
 		(strcmp(lexem,"ln")==0)||
 		(strcmp(lexem,"log")==0)||
