@@ -71,10 +71,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="expression_calculator.h" />
+    <ClInclude Include="lexem.h" />
     <ClInclude Include="mainForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="node.h" />
+    <ClInclude Include="queue.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="stack.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="graphPlot.rc" />
@@ -87,6 +93,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="expression_calculator.cpp" />
+    <ClCompile Include="lexem.cpp" />
     <ClCompile Include="mainForm.cpp" />
   </ItemGroup>
   <ItemGroup>
