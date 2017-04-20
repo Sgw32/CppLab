@@ -18,6 +18,7 @@ namespace graphPlot {
 	{
 	public:
 		Bitmap^ DrawArea;
+		SortedList^ mySL;
 		mainForm(void)
 		{
 			InitializeComponent();
@@ -206,7 +207,7 @@ namespace graphPlot {
 		}
 #pragma endregion
 	private: System::Void mainForm_Load(System::Object^  sender, System::EventArgs^  e) {
-
+				 mySL = gcnew SortedList;
 				
 	}
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -228,6 +229,8 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 			 a->var = 'x';
 			 a->value = 24;
 			 push(vars, a);
+
+			 mySL->Clear();
 			 for (double x = xmin; x <= xmax; x += step)
 			 {
 				 inq = initQueue<char*>();
@@ -237,7 +240,7 @@ private: System::Void button1_Click(System::Object^  sender, System::EventArgs^ 
 				 a->value = x;
 				 calculate_var(inp, res, vars);
 				 Double re = res;
-				 MessageBox::Show(re.ToString());
+				 mySL->Add(x, res);
 			 }
 }
 private: System::Void mainForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
@@ -252,7 +255,6 @@ private: System::Void mainForm_Paint(System::Object^  sender, System::Windows::F
 			 g->FillRectangle(mybrush, Rectangle(0, 0, pictureBox1->Width, pictureBox1->Height));
 			 pictureBox1->Image = DrawArea;
 			 delete g;
-			// Collections::SortedList
 			
 }
 
