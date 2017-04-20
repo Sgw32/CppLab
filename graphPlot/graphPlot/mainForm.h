@@ -19,6 +19,7 @@ namespace graphPlot {
 	public:
 		Bitmap^ DrawArea;
 		SortedList^ mySL;
+		double xmin, xmax, step;
 		mainForm(void)
 		{
 			InitializeComponent();
@@ -210,8 +211,73 @@ namespace graphPlot {
 				 mySL = gcnew SortedList;
 				
 	}
-private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-			 double xmin, xmax, step;
+private: 
+	
+	double maxElementKey(SortedList^ ar)
+	{
+		if (!ar->Count)
+			return;
+		double max = (double)ar->GetKey(0);
+		for (int i = 0; i < ar->Count; i++)
+		{
+			if ((double)ar->GetKey(i)>max)
+				max = (double)ar->GetKey(i);
+		}
+	}
+
+	double minElementKey(SortedList^ ar)
+	{
+		if (!ar->Count)
+			return;
+		double min = (double)ar->GetKey(0);
+		for (int i = 0; i < ar->Count; i++)
+		{
+			if ((double)ar->GetKey(i)<min)
+				min = (double)ar->GetKey(i);
+		}
+	}
+
+	double maxElement(SortedList^ ar)
+	{
+		if (!ar->Count)
+			return;
+		double max = (double)ar->GetKey(0);
+		for (int i = 0; i < ar->Count; i++)
+		{
+			if ((double)ar[i]>max)
+				max = (double)ar->GetKey(i);
+		}
+	}
+
+	double minElement(SortedList^ ar)
+	{
+		if (!ar->Count)
+			return;
+		double min = (double)ar->GetKey(0);
+		for (int i = 0; i < ar->Count; i++)
+		{
+			if ((double)ar[i]<min)
+				min = (double)ar->GetKey(i);
+		}
+	}
+
+	void plot(SortedList^ ar)
+	{
+		int pWidth = pictureBox1->Width;
+		int pHeight = pictureBox1->Height;
+		double max = maxElement(ar);
+		double min = minElement(ar);
+		double aspectRatio = (max - min) / (xmax - xmin);
+		double verticalScale = pHeight / (max - min);
+		double horisontalScale = pWidth / (xmax - xmin);
+		for (double x = xmin; x <= xmax; x += step)
+		{
+
+		}
+	}
+	
+	System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+			 
 			 Double::TryParse(textBox2->Text,xmin);
 			 Double::TryParse(textBox3->Text, xmax);
 			 Double::TryParse(textBox4->Text, step);
