@@ -309,7 +309,7 @@ Queue<char*> getVariables(Queue<char*> q)
 {
 	Queue<char*> temp_v_q =  initQueue<char*>();
 	Node<char*> *el = q.start;
-	while (el->next)
+	while (el)
 	{
 		if (isVariable(el->value))
 		{

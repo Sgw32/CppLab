@@ -209,56 +209,76 @@ namespace graphPlot {
 #pragma endregion
 	private: System::Void mainForm_Load(System::Object^  sender, System::EventArgs^  e) {
 				 mySL = gcnew SortedList;
-				
+				 DrawArea = gcnew Bitmap(pictureBox1->ClientRectangle.Width, pictureBox1->ClientRectangle.Height);
 	}
 private: 
 	
 	double maxElementKey(SortedList^ ar)
 	{
 		if (!ar->Count)
-			return;
+			return 0;
 		double max = (double)ar->GetKey(0);
 		for (int i = 0; i < ar->Count; i++)
 		{
-			if ((double)ar->GetKey(i)>max)
+			double el = (double)ar->GetByIndex(i);
+			if (el>max)
 				max = (double)ar->GetKey(i);
 		}
+		return max;
 	}
 
 	double minElementKey(SortedList^ ar)
 	{
 		if (!ar->Count)
-			return;
+			return 0;
 		double min = (double)ar->GetKey(0);
 		for (int i = 0; i < ar->Count; i++)
 		{
-			if ((double)ar->GetKey(i)<min)
+			double el = (double)ar->GetByIndex(i);
+			if (el<min)
 				min = (double)ar->GetKey(i);
 		}
+		return min;
 	}
 
 	double maxElement(SortedList^ ar)
 	{
 		if (!ar->Count)
-			return;
+			return 0;
 		double max = (double)ar->GetKey(0);
 		for (int i = 0; i < ar->Count; i++)
 		{
-			if ((double)ar[i]>max)
+			double el = (double)ar->GetByIndex(i);
+			if (el>max)
 				max = (double)ar->GetKey(i);
 		}
+		return max;
 	}
 
 	double minElement(SortedList^ ar)
 	{
 		if (!ar->Count)
-			return;
+			return 0;
 		double min = (double)ar->GetKey(0);
 		for (int i = 0; i < ar->Count; i++)
 		{
-			if ((double)ar[i]<min)
+			double el = (double)ar->GetByIndex(i);
+			if (el<min)
 				min = (double)ar->GetKey(i);
 		}
+		return min;
+	}
+
+	void makeWhiteBackground()
+	{
+			 Graphics^ g;
+			 g = Graphics::FromImage(DrawArea);
+
+			 SolidBrush^ mybrush = gcnew SolidBrush(Color::White);
+
+			 g->FillRectangle(mybrush, Rectangle(0, 0, pictureBox1->Width, pictureBox1->Height));
+			 pictureBox1->Image = DrawArea;
+			 delete g;
 	}
 
 	void plot(SortedList^ ar)
@@ -270,9 +290,18 @@ private:
 		double aspectRatio = (max - min) / (xmax - xmin);
 		double verticalScale = pHeight / (max - min);
 		double horisontalScale = pWidth / (xmax - xmin);
-		for (double x = xmin; x <= xmax; x += step)
-		{
+		makeWhiteBackground();
+		Graphics^ g;
+		g = Graphics::FromImage(DrawArea);
 
+		Pen^ blackPen = gcnew Pen( Brushes::Black );
+		for (double x = xmin; x < xmax-step; x += step)
+		{
+			double curx = (x-xmin)*horisontalScale;
+			double cury = ((double)ar[x])*verticalScale;
+			double nextx = (x+step-xmin)*horisontalScale;
+			double nexty = ((double)ar[x+step])*verticalScale;
+			g->DrawLine(blackPen,(int)curx,pictureBox1->Height/2-(int)cury,(int)nextx,pictureBox1->Height/2-(int)nexty);
 		}
 	}
 	
@@ -306,22 +335,12 @@ private:
 				 a->value = x;
 				 calculate_var(inp, res, vars);
 				 Double re = res;
-				 mySL->Add(x, res);
+				 mySL->Add(x, (double)res);
 			 }
+			 plot(mySL);
 }
 private: System::Void mainForm_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
-			 DrawArea = gcnew Bitmap(pictureBox1->Size.Width, pictureBox1->Size.Height);
-			 pictureBox1->Image = DrawArea;
-
-			 Graphics^ g;
-			 g = Graphics::FromImage(DrawArea);
-
-			 SolidBrush^ mybrush = gcnew SolidBrush(Color::White);
-
-			 g->FillRectangle(mybrush, Rectangle(0, 0, pictureBox1->Width, pictureBox1->Height));
-			 pictureBox1->Image = DrawArea;
-			 delete g;
-			
+			makeWhiteBackground();
 }
 
 };
